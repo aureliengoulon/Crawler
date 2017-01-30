@@ -7,7 +7,7 @@ Crawler is optimized for crawling and scraping from thousands of web pages.
 
 ## Getting Started
 
-This is a Python program and is supported as of version 3.6. It uses included modules and has some dependencies.
+This is a Python program and it is supported as of version 3.6 (can also run with PyPy 3.3.5). It uses included modules and has some dependencies.
 
 ### Prerequisites
 
