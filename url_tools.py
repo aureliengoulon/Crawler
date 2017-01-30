@@ -51,4 +51,6 @@ def get_soup_from_html(htmltext):
 
 def get_canonical_url(url):
     '''Returns canonical URL from link (protocol, name and location)'''
-    return urlparse(url).scheme+urlparse(url).netloc+urlparse(url).path
+    #return BeautifulSoup(htmltext, "lxml")
+    return BeautifulSoup(htmltext, "html5lib")
+
