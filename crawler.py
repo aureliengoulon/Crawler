@@ -100,6 +100,19 @@ class Crawler(mp.Process):
                 writer.writerow(content_to_save)
 
 
+def check_duplicate(filename):
+    f1 = csv.reader(open(filename, 'r'))
+    newrows = []
+    for row in f1:
+        if row not in newrows:
+            newrows.append(row)
+        writer = csv.writer(open('tmp.csv', 'w'))
+        writer.writerows(newrows)
+
+    os.remove(filename)
+    os.rename('tmp.csv', filename)
+
+
 def main():
     try:
         # Establish communication queues
@@ -146,13 +159,16 @@ def main():
         crawl_queue.join()
         print("queue joined")
 
-        print("\nresults\n")
-        print(crawled_list)
+        print('\nwriting to {}\n'.format(filename))
+        check_duplicate(filename)
+
+        # print("\nresults\n")
+        # print(crawled_list)
 
         # Crawlers shouldn't be stay in a blocked state that long
         # My solution is to terminate them. I investigated this
         # matter for some time now. Recommend finding another way.
-        # Pool of processes didn't seem fit as size of site is unknown 
+        # Pool of processes didn't seem fit as size of site is unknown
         for w in crawlers:
             w.join(1)
             # Join time out
