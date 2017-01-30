@@ -46,11 +46,10 @@ def get_html_from_url(url, headers={}):
 
 def get_soup_from_html(htmltext):
     '''Transform HTML text into a soup parseable object'''
-    return BeautifulSoup(htmltext, "lxml")
+    return BeautifulSoup(htmltext, "html5lib")
 
 
 def get_canonical_url(url):
     '''Returns canonical URL from link (protocol, name and location)'''
-    #return BeautifulSoup(htmltext, "lxml")
-    return BeautifulSoup(htmltext, "html5lib")
+    return urlparse(url).scheme+urlparse(url).netloc+urlparse(url).path
 
