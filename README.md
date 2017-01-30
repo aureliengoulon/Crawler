@@ -4,7 +4,7 @@
 A distributed crawling app designed to scale to hundreds of processing units.
 Crawler is optimized for crawling and scraping from thousands of web pages.
 
-<img src=“http://paratey.com/img/posts/crawler-architecture.svg” alt="Logo Uno" width="400px"/>
+<img src=“http://paratey.com/img/posts/crawler-architecture.svg” alt=“Crawler image“ width="400px"/>
 
 ## Getting Started
 
