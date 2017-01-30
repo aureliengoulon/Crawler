@@ -3,6 +3,6 @@ init:
 
 test:
 	@echo "Running Python tests"
-	py.test --verbose --color=yes test.py
+	py.test --verbose --color=yes unittests.py
 
 .PHONY: init test
