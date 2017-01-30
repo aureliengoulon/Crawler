@@ -159,8 +159,8 @@ def main():
         crawl_queue.join()
         print("queue joined")
 
-        print('\nwriting to {}\n'.format(filename))
-        check_duplicate(filename)
+        print('\nwriting to {}\n'.format(csv_filename))
+        check_duplicate(csv_filename)
 
         # print("\nresults\n")
         # print(crawled_list)
