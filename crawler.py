@@ -56,8 +56,8 @@ class Crawler(mp.Process):
                                               self.csv_headers)
                             self.found.value += 1
 
-                        # Look if there is any new URLs
-                        self.scrap_urls(html_info_soup)
+                    # Look if there is any new URLs
+                    self.scrap_urls(html_info_soup)
             # Notifying the queue we are done with this task
             self.task_q.task_done()
         return
