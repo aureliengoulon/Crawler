@@ -26,8 +26,9 @@ class CrawlerTestCase(unittest.TestCase):
 class UrlToolsTestCase(unittest.TestCase):
 
     def test_get_soup_from_html(self):
-        souped_utf8_html = '<html>\n<head></head>\n<body>'\
-                                '<p>Hello World!</p></body>\n</html>'
+        souped_utf8_html = '<html><head></head>\n            '\
+                            '<body><p>Hello World!</p>\n            '\
+                             '</body></html>'
         filename = 'test.html'
         f = open(filename, 'w')
         message = """<html>
@@ -54,6 +55,10 @@ class UrlToolsTestCase(unittest.TestCase):
         self.assertIs(is_valid_url(url_3), False)
         self.assertIs(is_valid_url(url_4), False)
         self.assertIs(is_valid_url(url_5), False)
+
+    def test_get_canonical_url(self):
+        can_url = 'https://www.google.com/recaptcha'
+        self.assertEqual(can_url, get_canonical_url(can_url))
 
 
 if __name__ == '__main__':
