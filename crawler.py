@@ -106,11 +106,11 @@ def check_duplicate(filename):
     for row in f1:
         if row not in newrows:
             newrows.append(row)
-        writer = csv.writer(open('tmp.csv', 'w'))
+        writer = csv.writer(open('.tmp.csv', 'w'))
         writer.writerows(newrows)
 
     os.remove(filename)
-    os.rename('tmp.csv', filename)
+    os.rename('.tmp.csv', filename)
 
 
 def main():
