@@ -28,7 +28,7 @@ class UrlToolsTestCase(unittest.TestCase):
     def test_get_soup_from_html(self):
         souped_utf8_html = '<html><head></head>\n            '\
                             '<body><p>Hello World!</p>\n            '\
-                             '</body></html>'
+                            '</body></html>'
         filename = 'test.html'
         f = open(filename, 'w')
         message = """<html>
