@@ -181,8 +181,14 @@ def main():
             w.terminate()
         print('all crawlers terminated')
         delete = input("Delete csv result file? (y/n): ")
-        if delete == 'y':
-            os.remove(csv_filename)
+        try:
+            if delete == 'y':
+                os.remove(csv_filename)
+            else:
+                print("{} might be corrupted".format(csv_filename))
+
+        except FileNotFoundError:
+            print("File not found")
 
     except Exception as e:
         print('got exception: {}, terminating the pool'.format(e))
@@ -191,11 +197,17 @@ def main():
         print('all crawlers terminated')
         os.remove(csv_filename)
 
-    finally:
-        check_duplicate(csv_filename)
-
-        print('\n --- Exiting --- \n\nCheck results in {}'.format(
+    else:
+        try:
+            check_duplicate(csv_filename)
+            print('\n --- Exiting --- \n\nCheck results in {}'.format(
                 csv_filename))
+
+        except FileNotFoundError:
+            print("File not found")
+
+    finally:
+        
         print("--- finished at {} ---".format(time.strftime(
             "%H:%M:%S", time.localtime())))
         print("--- {} sec ---".format(time.time() - start_time))
