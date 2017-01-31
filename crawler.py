@@ -137,7 +137,7 @@ def main():
         open(csv_filename, 'w+')
         os.remove(csv_filename)
         # Start consumers
-        num_consumers = mp.cpu_count()
+        num_consumers = mp.cpu_count() * 4
 
         print('Creating {} crawlers'.format(num_consumers))
         start_time = time.time()
@@ -160,7 +160,6 @@ def main():
         print("queue joined")
 
         print('\nwriting to {}\n'.format(csv_filename))
-        check_duplicate(csv_filename)
 
         # print("\nresults\n")
         # print(crawled_list)
@@ -193,6 +192,8 @@ def main():
         os.remove(csv_filename)
 
     finally:
+        check_duplicate(csv_filename)
+
         print('\n --- Exiting --- \n\nCheck results in {}'.format(
                 csv_filename))
         print("--- finished at {} ---".format(time.strftime(
