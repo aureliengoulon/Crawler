@@ -4,6 +4,8 @@
 A distributed crawling app designed to scale to hundreds of processing units.
 Crawler is optimized for crawling and scraping from thousands of web pages.
 
+<img src="http://seo-advisors.com/wp-content/uploads/2013/07/Crawlers-Key-Role-Is-To-Identify-The-Right-Content-Link.jpg" alt="Img Server" width="200px"/>
+
 
 ## Getting Started
 
