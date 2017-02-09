@@ -1,6 +1,7 @@
 import unittest
 import csv
 import os
+import io
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from crawler import Crawler
@@ -29,18 +30,12 @@ class UrlToolsTestCase(unittest.TestCase):
         souped_utf8_html = '<html><head></head>\n            '\
                             '<body><p>Hello World!</p>\n            '\
                             '</body></html>'
-        filename = 'test.html'
-        f = open(filename, 'w')
-        message = """<html>
+        expected_soup = io.StringIO("""<html>
             <head></head>
             <body><p>Hello World!</p></body>
-            </html>"""
-        f.write(message)
-        f.close()
-        with open(filename, 'r') as content:
-            self.assertEqual(souped_utf8_html.encode("utf-8"),
-                             get_soup_from_html(content).encode("utf-8"))
-        os.remove(filename)
+            </html>""")
+        self.assertEqual(souped_utf8_html.encode("utf-8"),
+                             get_soup_from_html(expected_soup.read()).encode("utf-8"))
 
     def test_get_canonical_url(self):
         can_url = 'https://www.google.com/recaptcha'
@@ -48,6 +43,7 @@ class UrlToolsTestCase(unittest.TestCase):
 
         
 class IsValidUrlTest(unittest.TestCase):
+    
     def test_returns_false_if_url_doesnt_look_like_an_actual_url(self):
         url = "/perfume"
         self.assertIs(is_valid_url(url), False)
