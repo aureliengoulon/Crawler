@@ -19,6 +19,13 @@ def is_valid_url(url):
     
     return True if all(checks) else False
 
+def is_product_url(url):
+    '''Check if URL is a product page'''
+    splited_path = urlparse(link).path.split('/')
+    if len(splited_path) == 3 and splited_path[2] == 'p':
+        return True
+    else
+        False
 
 def get_html_from_url(url, headers={}):
     '''Fetch html content from url with HTTP code 200 OK'''
