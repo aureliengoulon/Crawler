@@ -29,38 +29,35 @@ class Crawler(mp.Process):
     def run(self):
         """Overrides multiprocessing.Process.run()"""
         while True:
-            new_urls = []
             url_to_parse = ''
             with self.task_lock:
                 url_to_parse = self.task_q.get()
-                # Scrapping URLs from page
-            html_url_soup = get_soup_from_html(
-                get_html_from_url(url_to_parse, self.headers))
-            new_urls = self.scrap_urls(html_url_soup)
-            for link in new_urls:
-                # Check we are on a valid product page
-                splited_path = urlparse(link).path.split('/')
-                if len(splited_path) == 3 and splited_path[2] == 'p':
-                    # Scrapping product infos from page
-                    html_info_soup = get_soup_from_html(
-                                get_html_from_url(link, self.headers))
-                    content_to_save = []
-                    for item in html_info_soup.select(self.css_selectors):
-                        content_to_save.append(item.text)
-                    if len(content_to_save) == 2:
-                        content_to_save.append(get_canonical_url(link))
-                        # Write to csv here
-                        with self.csv_lock:
-                            self.write_to_csv(self.csv_filename,
-                                              content_to_save,
-                                              self.csv_headers)
-                            self.found.value += 1
-
-                    # Look if there is any new URLs
-                    self.scrap_urls(html_info_soup)
-            # Notifying the queue we are done with this task
+                # Scrap URLs from page
+                href_soup = get_soup_from_html(url_to_parse, self.headers)
+            for link in self.scrap_urls(href_soup):
+                if is_product_url(url_to_parse):
+                # Scrap infos from product page
+                    scrap_infos(link)
+            # Notify the queue we are done with this task
             self.task_q.task_done()
         return
+    
+
+    def scrap_infos(self, link):
+        info_soup = get_soup_from_html(link, self.headers)
+        content_to_save = []
+        for item in info_soup.select(self.css_selectors):
+            content_to_save.append(item.text)
+        if len(content_to_save) == 2:
+            content_to_save.append(get_canonical_url(link))
+            with self.csv_lock:
+                self.write_to_csv(self.csv_filename,
+                                  content_to_save,
+                                  self.csv_headers)
+                self.found.value += 1
+        # Look if there are any new links
+        self.scrap_urls(info_soup)
+
 
     def scrap_urls(self, soup):
         """Return a list of unbrowsed URLs
@@ -68,13 +65,10 @@ class Crawler(mp.Process):
         and discard do nothing with it if already in visited history.
         """
         new_urls = []
-        for tag in soup.findAll('a', href=True):
+        for tag in doc.xpath('//a/@href'):
             tag['href'] = urljoin(self.base_url, tag['href'])
             with self.result_lock:
-                if is_valid_url(tag['href']) and \
-                    self.base_url in tag['href'] and \
-                        tag['href'] not in self.result_l:
-                    # Proc_name :: total_urls  new_urls  URL
+                if is_new_link(tag['href'], self.result_l, self.base_url):
                     print('{:11s} :: {:6d} {:5d}  {}'.format(
                           self.name, len(self.result_l), self.found.value,
                           urlparse(tag['href']).path))
@@ -84,6 +78,7 @@ class Crawler(mp.Process):
                     self.task_q.put(tag['href'])
         return new_urls
 
+    
     @staticmethod
     def write_to_csv(filename, content_to_save, file_headers=[]):
         """Create a new file if not already done before.
@@ -189,16 +184,9 @@ def main():
         print('all crawlers terminated')
         os.remove(csv_filename)
 
-    else:
-        try:
-            check_duplicate(csv_filename)
-            print('\n --- Exiting --- \n\nCheck results in {}'.format(
-                csv_filename))
-
-        except FileNotFoundError:
-            print("File not found")
-
     finally:
+        print('\n --- Exiting --- \n\nCheck results in {}'.format(
+                csv_filename))
         
         print("--- finished at {} ---".format(time.strftime(
             "%H:%M:%S", time.localtime())))
