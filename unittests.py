@@ -42,23 +42,43 @@ class UrlToolsTestCase(unittest.TestCase):
                              get_soup_from_html(content).encode("utf-8"))
         os.remove(filename)
 
-    def test_is_valid_url(self):
-        url_0 = "www.epocacosmeticos.com.br"
-        url_1 = "/perfume"
-        url_2 = "http://www.epocacosmeticos.com.br/sitemap"
-        url_3 = "http://www.epocacosmeticos.com.br/buscapagina"
-        url_4 = "http://www.epocacosmeticos.com.br/#item-k"
-        url_5 = "http://www.epocacosmeticos.com.br/2/3/4/5"
-        self.assertIs(is_valid_url(url_0), False)
-        self.assertIs(is_valid_url(url_1), False)
-        self.assertIs(is_valid_url(url_2), False)
-        self.assertIs(is_valid_url(url_3), False)
-        self.assertIs(is_valid_url(url_4), False)
-        self.assertIs(is_valid_url(url_5), False)
-
     def test_get_canonical_url(self):
         can_url = 'https://www.google.com/recaptcha'
         self.assertEqual(can_url, get_canonical_url(can_url))
+
+        
+class IsValidUrlTest(unittest.TestCase):
+    def test_returns_false_if_url_doesnt_look_like_an_actual_url(self):
+        url = "/perfume"
+        self.assertIs(is_valid_url(url), False)
+
+    def test_returns_false_if_url_depth_is_greater_than_two(self):
+        url = "http://www.epocacosmeticos.com.br/2/3/4/5"
+        self.assertIs(is_valid_url(url), False)
+
+    def test_returns_true_if_url_depth_is_less_than_or_equal_two(self):
+        url = "http://www.epocacosmeticos.com.br/2"
+        self.assertIs(is_valid_url(url), False)
+        self.fail('Shouldn\'t happen')
+
+    def test_returns_false_if_url_is_sitemap(self):
+        url = "http://www.epocacosmeticos.com.br/sitemap"
+        self.assertIs(is_valid_url(url), False)
+
+    def test_returns_false_if_url_is_search_page(self):
+        url = "http://www.epocacosmeticos.com.br/buscapagina"
+        self.assertIs(is_valid_url(url), False)
+
+    def test_returns_false_if_url_has_fragment(self):
+        url = "http://www.epocacosmeticos.com.br/#item-k"
+        self.assertIs(is_valid_url(url), False)
+
+    def test_returns_true_if_url_is_product_page(self):
+        url_0 = "http://www.epocacosmeticos.com.br/productXYZ/p"
+        self.assertIs(is_valid_url(url_0), True)
+        url_1 = "www.epocacosmeticos.com.br"
+        self.assertIs(is_valid_url(url_1), False)
+        self.fail('Shouldn\'t happen')
 
 
 if __name__ == '__main__':
