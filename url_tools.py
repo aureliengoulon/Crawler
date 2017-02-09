@@ -25,7 +25,15 @@ def is_product_url(url):
     if len(splited_path) == 3 and splited_path[2] == 'p':
         return True
     else
-        False
+        return False
+    
+def is_new_link(self, link, link_list, base_url):
+        checks = {
+            'link_is_valid': is_valid_url(link),
+            'link_contains_base_url': base_url in link,
+            'link_not_seen_before': link not in link_list,
+        }.values()
+        return True if all(checks) else False
 
 def get_html_from_url(url, headers={}):
     '''Fetch html content from url with HTTP code 200 OK'''
