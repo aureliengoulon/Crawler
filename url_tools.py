@@ -8,9 +8,7 @@ from bs4 import BeautifulSoup
 def is_valid_url(url):
     '''Check URL validity against known unviable locators'''
     MAX_URL_DEPTH = 2
-
     parsed_url = urlparse(url)
-
     checks = {
         'looks_like_url': validators.url(url),
         'within_depth_limit': len(parsed_url.path.split('/')) - 1 <= MAX_URL_DEPTH,
@@ -18,7 +16,7 @@ def is_valid_url(url):
         'is_not_search_page': parsed_url.path not in {'/busca', '/buscapagina'},
         'doesnt_have_fragment': not parsed_url.fragment,
     }.values()
-
+    
     return True if all(checks) else False
 
 
