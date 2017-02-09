@@ -7,20 +7,19 @@ from bs4 import BeautifulSoup
 
 def is_valid_url(url):
     '''Check URL validity against known unviable locators'''
-    # [0] / [1] / [2] / [3] ... with [0]=='' before netloc
-    allowed_depth = 2
-    if not validators.url(url):
-        return False
-    else:
-        parsed_url = urlparse(url)
-        if len(parsed_url.path.split('/')) - 1 > allowed_depth or \
-            url == "http://www.epocacosmeticos.com.br/sitemap" or \
-                parsed_url.path == '/buscapagina' or \
-                parsed_url.path == '/busca' or \
-                parsed_url.fragment != '':
-            return False
-        else:
-            return True
+    MAX_URL_DEPTH = 2
+
+    parsed_url = urlparse(url)
+
+    checks = {
+        'looks_like_url': validators.url(url),
+        'within_depth_limit': len(parsed_url.path.split('/')) - 1 <= MAX_URL_DEPTH,
+        'is_not_sitemap': url != 'http://www.epocacosmeticos.com.br/sitemap',
+        'is_not_search_page': parsed_url.path not in {'/busca', '/buscapagina'},
+        'doesnt_have_fragment': not parsed_url.fragment,
+    }.values()
+
+    return True if all(checks) else False
 
 
 def get_html_from_url(url, headers={}):
