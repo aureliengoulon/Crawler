@@ -48,9 +48,9 @@ def get_html_from_url(url, headers={}):
     return htmltext
 
 
-def get_soup_from_html(htmltext):
+def get_soup_from_html(url, headers):
     '''Transform HTML text into a soup parseable object'''
-    return BeautifulSoup(htmltext, "html5lib")
+    return BeautifulSoup(get_html_from_url(url, headers), "html5lib")
 
 
 def get_canonical_url(url):
