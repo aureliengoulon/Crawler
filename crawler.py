@@ -90,27 +90,19 @@ class Crawler(mp.Process):
         Appends the specified line of content into a new row of the file
         """
         if os.path.isfile(filename):
-            with open(filename, 'a', newline='') as csvfile:
-                writer = csv.writer(csvfile)
-                writer.writerow(content_to_save)
+            filereader = csv.reader(open(filename, 'r'))
+            newrows = []
+            for row in filereader:
+                if row not in newrows:
+                    newrows.append(row)
+                if content_to_save not in newrows:
+                    writer = csv.writer(open(filename, 'a'))
+                    writer.writerow(content_to_save)
         else:
             with open(filename, 'w+') as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(file_headers)
                 writer.writerow(content_to_save)
-
-
-def check_duplicate(filename):
-    f1 = csv.reader(open(filename, 'r'))
-    newrows = []
-    for row in f1:
-        if row not in newrows:
-            newrows.append(row)
-        writer = csv.writer(open('.tmp.csv', 'w'))
-        writer.writerows(newrows)
-
-    os.remove(filename)
-    os.rename('.tmp.csv', filename)
 
 
 def main():
